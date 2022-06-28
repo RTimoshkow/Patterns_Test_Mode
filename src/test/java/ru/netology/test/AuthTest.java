@@ -1,9 +1,8 @@
 package ru.netology.test;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -15,22 +14,22 @@ import static ru.netology.faker.DataGenerator.getRandomPassword;
 
 public class AuthTest {
 
-    @BeforeAll
-    static void setUpAll() {
+    @BeforeEach
+    void setup() {
         open("http://localhost:9999");
     }
 
     @Test
-    void shouldSuccessfulLoginIfRegisteredActiveUser() {
+    public void shouldSuccessfulLoginIfRegisteredActiveUser() {
         var registeredUser = getRegisteredUser("active");
         $("[data-test-id=\"login\"] input").val(registeredUser.getLogin());
         $("[data-test-id=\"password\"] input").val(registeredUser.getPassword());
         $(".button").click();
-        $(".heading").shouldBe(visible).shouldBe(ownText("Личный кабинет"), Duration.ofSeconds(4));
+        $(".heading").shouldBe(ownText("Личный кабинет"));
     }
 
     @Test
-    void shouldGetErrorIfNotRegisteredUser() {
+    public void shouldGetErrorIfNotRegisteredUser() {
         var notRegisteredUser = getUser("active");
         $("[data-test-id=\"login\"] input").val(notRegisteredUser.getLogin());
         $("[data-test-id=\"password\"] input").val(notRegisteredUser.getPassword());
@@ -39,7 +38,7 @@ public class AuthTest {
     }
 
     @Test
-    void shouldGetErrorIfBlockedUser() {
+    public void shouldGetErrorIfBlockedUser() {
         var blockedUser = getRegisteredUser("blocked");
         $("[data-test-id=\"login\"] input").val(blockedUser.getLogin());
         $("[data-test-id=\"password\"] input").val(blockedUser.getPassword());
@@ -48,7 +47,7 @@ public class AuthTest {
     }
 
     @Test
-    void shouldGetErrorIfWrongLogin() {
+    public void shouldGetErrorIfWrongLogin() {
         var registeredUser = getRegisteredUser("active");
         var wrongLogin = getRandomLogin();
         $("[data-test-id=\"login\"] input").val(wrongLogin);
@@ -58,7 +57,7 @@ public class AuthTest {
     }
 
     @Test
-    void shouldGetErrorIfWrongPassword() {
+    public void shouldGetErrorIfWrongPassword() {
         var registeredUser = getRegisteredUser("active");
         var wrongPassword = getRandomPassword();
         $("[data-test-id=\"login\"] input").val(registeredUser.getLogin());
